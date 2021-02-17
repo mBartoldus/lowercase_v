@@ -1,4 +1,6 @@
 # lowercase_v
+> presently available as an ES6 module
+
 I started this library while messing around in webGL. I was typing vectors all day, so I wanted a class that was:
 
 * chainable
@@ -8,7 +10,7 @@ I started this library while messing around in webGL. I was typing vectors all d
 * easy to read
 * easy to type
 
-If that sounds relevant to your project, read on.
+If that sounds relevant to your interests, read on.
 
 ## Table of Contents
 0. Intro
