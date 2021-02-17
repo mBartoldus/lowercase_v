@@ -105,15 +105,15 @@ Just as .copy() and .read() takes data out of arrays, .write() puts them back in
 
 You can explicitly state which array and index you're writing to, or you can leave out the parameters if you're writing to the same data you read from earlier. As a general rule of thumb, you should only rely on the default parameters in .read() and .write() as bookends in a chain. For example:
 
-	v(3).read(flat_array, index)
-		.add(displacement)
+	v(3).read( flat_array, index )
+		.add( displacement )
 		.write()
 
 The above example creates a temporary v(3), which then grabs a vector from an array, adds a displacement vector, and saves the result snugly back where you found it.
 
-	v(3).read(Velocity, id)
-		.bounce(surface_normal)
-		.scale(1/damping)
+	v(3).read( Velocity, id )
+		.bounce( surface_normal )
+		.scale( 1 / damping )
 		.write()
 
 In this example, "Velocity" is a flat array, "id" is an integer reserved by an entity whose velocity is stored at that index. In this situation, the entity was moving in a direction, but has bounced off a surface, which has also slowed the velocity by some amount of damping.
@@ -182,7 +182,7 @@ Linearly interpolates the caller towards another vector.
 ### .slerp( t, vector )
 .slerp(). **S**pherical **L**inear int**ERP**olation. Slerp. I swear I'm not making this up. https://en.wikipedia.org/wiki/Slerp
 
-	point_A.slerp(point_B)
+	point_A.slerp( point_B )
 	// similar to linear interpolation, but instead of a straight line, point_A is rotated about the origin.
 	// when point_A and point_B are different magnitudes, the resulting vector's magnitude is linearly interpolated
 
