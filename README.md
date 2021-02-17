@@ -32,11 +32,11 @@ v() returns an object that extends Float32Array. Passing a single number returns
 
 Alternatively, you can initialize the vector with a combination of numbers and iterables.
 
-Let's say you wanted a 3-dimensional vector with elements [1,2,3].
+Let's say you wanted a 3-dimensional vector with elements [1,2,3]. Valid ways of declaring that vector include:
 
 	v(1,2,3)
 	v([1,2], 3)
-	v([1], 2, new Float32Array([3])) // these all return [1,2,3]
+	v([1], 2, new Float32Array([3]))
 
 > This feature was inspired by GLSL, wherein parameter concatenation is useful in converting vec3 to vec4.
 > You can use concatenation to make quaternions, append alpha values to RGB, extend stencil shadow volumes to "infinity", etc.
