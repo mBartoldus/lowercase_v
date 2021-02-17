@@ -20,7 +20,7 @@ If that sounds relevant to your project, read on.
 6. v() Methods
 7. m() Methods
 
-## 1. v(...)
+## v(...)
 v() returns an object that extends Float32Array. Passing a single number returns the zero vector of that dimension.
 
 	v(2) // returns [0,0]
@@ -41,7 +41,7 @@ This feature was inspired by GLSL, where parameter concatenation is useful in co
 > * v(100) returns a 100-dimensional vector
 > * v([100]) returns a 1-dimensional vector with the value 100.
 
-## 2. m(...)
+## m(...)
 m() also extends Float32Array. Pass it a single number and it will give you the relevant n-by-n zero matrix.
 
 	m(3) // returns a blank 3x3 matrix
@@ -57,7 +57,7 @@ To populate the matrix, use the methods .assign(), .from_rows(), .from_columns()
 
 The values are stored in column-major order, for compatibility with webgl and GLSL.
 
-## 3. In-Place Methods
+## In-Place Methods
 By default, in most of the methods in this library, the object will modify itself, and return "this". That fact is important to remember, as it can cause some confusion:
 
 	let A_to_B = point_A.to(point_B)
@@ -68,7 +68,7 @@ In the above example, point_A has modified itself, and worse yet - A_to_B is the
 
 That way, you only allocate new memory when you explicitly need it, and you can do so with brevity.
 
-## 4. Reading and Writing
+## Reading and Writing
 The Vec and Matrix classes included in this library share the following methods for interacting with flat arrays:
 
 * .copy()
@@ -109,7 +109,7 @@ In this example, "Velocity" is a flat array, "id" is an integer reserved by an e
 
 > Writing to another vector is discouraged. The methods .read() and .write() should be reserved for large persistent flat arrays with shared indices, like those you might find in an ECS architecture. If you try reading or writing to a vector, the one calling these methods will likely remember an index from an earlier call, and try to access some out-of-bounds index. For those situations, use copy instead.
 
-## 5. Parameter Formats
+## Parameter Formats
 Most methods on v() and m() will liberally interpret parameters. If you pass a combination of numbers and iterables to a method expecting a vector, it will concatenate them without need for the v() constructor.
 
 	v(3).add(1,2,3)
@@ -124,7 +124,7 @@ If you pass a large array with no index specified, an index may be remembered fr
 
 Methods expecting a plane will look for a normal followed by a point on that plane. Parameters can be concatenated, but I'd advise against it, it can get messy. If no point on the plane is given, the method will assume the plane runs through the origin.
 
-## 6. v() Methods
+## v() Methods
 v() has several methods expected of any vector library:
 
 	.add( vector )
@@ -205,7 +205,7 @@ Finally, there are a couple of functions on the v object itself. They are:
 
 These return values without modifying the arguments. Other than that, they're redundant.
 
-## 6. m() Methods
+## m() Methods
 ### .row( index ), .column( index )
 Returns the nth row or column of this matrix as a vector
 
