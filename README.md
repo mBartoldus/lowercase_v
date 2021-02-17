@@ -21,7 +21,8 @@ If that sounds relevant to your interests, read on.
 5. Regarding Parameter Formats
 6. v() Methods
 7. m() Methods
-8. Credits
+8. Future Plans
+9. Credits
 
 ## v(...)
 v() returns an object that extends Float32Array. Passing a single number returns the zero vector of that dimension.
@@ -240,7 +241,7 @@ Assigns values to this matrix using row or column vectors. An empty string can b
 					//	    4 0
 
 ### .from_quaternion( quaternion )
-Builds a transformation matrix from a quaternion.
+Populates a 3x3 transformation matrix from a quaternion.
 
 A quaternion is a normalized v(4) where the first three elements represent the axis of rotation, and the final element, commonly referred to as "w", is the inverse of rotation. When w == 0, the quaternion represents a 180° turn along the axis. When w == 1, there's no rotation. Therefore, v(0,0,0,1) is the identity quaternion.
 
@@ -284,6 +285,23 @@ Let's say character_A needs to face character_B, in an OOP engine where the char
 
 ### m.identity( n )
 Returns an nxn identity matrix. This function is called from the m object itself.
+
+## Future plans
+
+The next version may include flat array classes.
+
+	Flat_s( n_scalars )			// new Float32Array( n_scalars )
+	Flat_v( n_vectors, dimension )		// new Float32Array( n_vectors * dimension )
+	Flat_m( n_matrices, dimensions )	// new Float32Array( n_matrices * dimensions[0] * dimensions[1] )
+
+Each of these classes will come with .get( index ) and .set( index, value ) methods.
+Vectors and matrices returned from .get() would be initialized with references to the parent array for ease of writing
+
+	let Velocity = Flat_v( n_entities, 3 )
+
+	v(3).read( Velocity, entity_id ).bounce( normal ).write()	// present syntax
+
+	Velocity.get( entity_id ).bounce( normal ).write()		// Flat_v syntax
 
 ## Credits
 As mentioned before, [gl-matrix](https://github.com/toji/gl-matrix) was the inspiration for much of this.
