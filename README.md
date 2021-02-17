@@ -11,14 +11,15 @@ I started this library while messing around in webGL. I was typing vectors all d
 If that sounds relevant to your project, read on.
 
 ## Table of Contents
-0. intro
-1. the v() constructor
-2. the m() constructor
+0. Intro
+1. The v() constructor
+2. The m() constructor
 3. Regarding In-Place Methods
 4. Reading and Writing to Flat Arrays
 5. Regarding Parameter Formats
 6. v() Methods
 7. m() Methods
+8. Credits
 
 ## v(...)
 v() returns an object that extends Float32Array. Passing a single number returns the zero vector of that dimension.
@@ -173,7 +174,7 @@ Linearly interpolates the caller towards another vector.
 	// similar to linear interpolation, but instead of a straight line, point_A is rotated about the origin.
 	// when point_A and point_B are different magnitudes, the resulting vector's magnitude is linearly interpolated
 
-> Shoutout to tojiCode! A lot of this library was inspired by gl-matrix.js, *especially* the slerp.
+> Shoutout to tojiCode: A lot of this library was inspired by [gl-matrix](https://github.com/toji/gl-matrix), *especially* the slerp.
 
 ### .to_plane( normal, point_on_plane )
 Calculates distance to a plane as defined by a point and a normal vector. A return value of 0 means your vactor is on the plane. A positive value means the vector is in front, and a negative means it is behind.
@@ -270,3 +271,7 @@ Let's say character_A needs to face character_B, in an OOP engine where the char
 
 ### m.identity( n )
 Returns an nxn identity matrix. This function is called from the m object itself.
+
+## Credits
+As mentioned before, [gl-matrix](https://github.com/toji/gl-matrix) was the inspiration for much of this.
+Also, credits to William Rowan Hamilton for his exploration of quaternions, and numbers in general.
