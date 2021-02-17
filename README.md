@@ -49,13 +49,13 @@ This leaves one Potential ambiguity to consider:
 ## m(...)
 m() also extends Float32Array. Pass it a single number and it will give you the relevant n-by-n zero matrix.
 
-	m(3) // returns a blank 3x3 matrix
+	m(3)	// returns a blank 3x3 matrix
 	
 For an m-by-n matrix, pass two numbers.
 The first will determine the number of rows ( the codomain ), and the second will determine the number of columns ( the domain ).
 These numbers will be stored in the resulting matrix's .domain and .codomain properties.
 
-	m(2, 3) // returns a matrix with 2 rows and 3 columns
+	m(2, 3)	// returns a matrix with 2 rows and 3 columns
 
 The m() constructor can't initialize values, as the domain and codomain need to be initialized first.
 To populate the matrix, use the methods .assign(), .from_rows(), .from_columns(), .from_quaternion(), .look_at(), or .face_towards().
@@ -86,7 +86,8 @@ The Vec and Matrix classes included in this library share the following methods 
 	let flat_array = [ 0,0,0,
 			   1,2,3 ]
 
-	let vector_1 = v(3).copy(flat_array, 1) // vector_1 == [1,2,3]
+	let vector_1 = v(3).copy(flat_array, 1)
+							// vector_1 == [1,2,3]
 
 By giving .copy() a large array followed by an index, the vector assumes the array is tightly packed with vectors of the same dimension, and populates itself with the values of the nth vector in that array.
 
@@ -118,12 +119,14 @@ In this example, "Velocity" is a flat array, "id" is an integer reserved by an e
 Most methods on v() and m() will liberally interpret parameters. If you pass a combination of numbers and iterables to a method expecting a vector, it will concatenate them without need for the v() constructor.
 
 	v(3).add(1,2,3)
-	v(3).add(v(1,2,3)) // these are equivalent
+	v(3).add(v(1,2,3))
+						// these are equivalent
 
 If you pass a large array (+ optionally index) to a method expecting a vector or a matrix, the parameters will be interpreted in the same way as .copy()
 
 	v(3).add( flat_array, index )
-	v(3).add( v(3).copy(flat_array, index) ) // also equivalent
+	v(3).add( v(3).copy(flat_array, index) )
+						// these are also equivalent
 
 If you pass a large array with no index specified, an index may be remembered from a prior .read(). Again, this is useful when you have large persistent arrays with shared indices. But if you're feeling unsure, just specify the index.
 
@@ -150,7 +153,7 @@ Checks the distance between two vectors and returns true if they're within a giv
 ### .swizzle( indices )
 Swizzling allows you to create a new vector from the values of another. .swizzle() accepts a vector of indices, and returns a new vector with the values taken from those indices.
 
-	v(1,2,3).swizzle(0,0,0,1,2) // returns v(1,1,1,2,3)
+	v(1,2,3).swizzle(0,0,0,1,2) 		// returns v(1,1,1,2,3)
 
 You can also call this method as .swz()
 
@@ -160,7 +163,7 @@ Uses Math.random() to repopulate the vector with values clamped in given range o
 ### .v_scale( vector )
 Scales the caller by a vector argument, elementwise. That is to say:
 
-	v(0,1,2).v_scale(2,3,4) // returns v(0,3,8)
+	v(0,1,2).v_scale(2,3,4)			// returns v(0,3,8)
 
 ### .lerp( t, vector )
 Linearly interpolates the caller towards another vector.
