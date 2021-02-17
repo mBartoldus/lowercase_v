@@ -1,4 +1,7 @@
-/*----------------------------------------------------------------------------------------------------------*/
+//
+// https://github.com/mBartoldus/lowercase_v/
+// 
+
 // Functions for handling parameter formats
 
 function _copy_at_index(output, input, index = 0) {
