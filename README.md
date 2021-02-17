@@ -24,7 +24,7 @@ If that sounds relevant to your project, read on.
 
 ## 1. v(...)
 
-v() returns an object that extends Float32Array. You can pass it a single number to get the zero vector of that dimension.
+v() returns an object that extends Float32Array. Passing a single number returns the zero vector of that dimension.
 
 	v(2) // returns [0,0]
 	v(3) // returns [0,0,0]
