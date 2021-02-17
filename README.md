@@ -43,19 +43,19 @@ Let's say you wanted a 3-dimensional vector with elements [1,2,3]. Valid ways of
 
 This leaves one Potential ambiguity to consider:
 
-	v(100)   // returns a 100-dimensional vector
+	v( 100 )   // returns a 100-dimensional vector
 	v([100]) // returns a 1-dimensional vector with the value 100.
 
 ## m(...)
 m() also extends Float32Array. Pass it a single number and it will give you the relevant n-by-n zero matrix.
 
-	m(3)	// returns a blank 3x3 matrix
+	m( 3 )	// returns a blank 3x3 matrix
 	
 For an m-by-n matrix, pass two numbers.
 The first will determine the number of rows ( the codomain ), and the second will determine the number of columns ( the domain ).
 These numbers will be stored in the resulting matrix's .domain and .codomain properties.
 
-	m(2, 3)	// returns a matrix with 2 rows and 3 columns
+	m( 2, 3 )	// returns a matrix with 2 rows and 3 columns
 
 The m() constructor can't initialize values, as the domain and codomain need to be initialized first.
 To populate the matrix, use the methods .assign(), .from_rows(), .from_columns(), .from_quaternion(), .look_at(), or .face_towards().
@@ -65,11 +65,11 @@ To populate the matrix, use the methods .assign(), .from_rows(), .from_columns()
 ## In-Place Methods
 By default, in most of the methods in this library, the object will modify itself, and return "this". That fact is important to remember, as it can cause some confusion:
 
-	let A_to_B = point_A.to(point_B)
+	let A_to_B = point_A.to( point_B )
 
 In the above example, point_A has modified itself, and worse yet - A_to_B is the same object as point_A. This is not what we wanted. You can fix this by wrapping point_A in the v() constructor to clarify its role as a new vector:
 
-	let A_to_B = v(point_A).to(point_B)
+	let A_to_B = v( point_A ).to( point_B )
 
 That way, new memory is only allocated when explicitly needed, and one can do so with brevity.
 
@@ -86,7 +86,7 @@ The Vec and Matrix classes included in this library share the following methods 
 	let flat_array = [ 0,0,0,
 			   1,2,3 ]
 
-	let vector_1 = v(3).copy(flat_array, 1)
+	let vector_1 = v(3).copy( flat_array, 1 )
 							// vector_1 == [1,2,3]
 
 By giving .copy() a large array followed by an index, the vector assumes the array is tightly packed with vectors of the same dimension, and populates itself with the values of the nth vector in that array.
@@ -101,7 +101,7 @@ By giving .copy() a large array followed by an index, the vector assumes the arr
 ### .write()
 Just as .copy() and .read() takes data out of arrays, .write() puts them back in.
 
-	v(3).randomize().write(flat_array, index)
+	v(3).randomize().write( flat_array, index )
 
 You can explicitly state which array and index you're writing to, or you can leave out the parameters if you're writing to the same data you read from earlier. As a general rule of thumb, you should only rely on the default parameters in .read() and .write() as bookends in a chain. For example:
 
@@ -158,7 +158,7 @@ Checks the distance between two vectors and returns true if they're within a giv
 ### .swizzle( indices )
 Swizzling allows you to create a new vector from the values of another. .swizzle() accepts a vector of indices, and returns a new vector with the values taken from those indices.
 
-	v(1,2,3).swizzle(0,0,0,1,2) 		// returns v(1,1,1,2,3)
+	v( 1,2,3 ).swizzle( 0,0,0,1,2 ) 	// returns v(1,1,1,2,3)
 
 You can also call this method as .swz()
 
@@ -168,12 +168,12 @@ Uses Math.random() to repopulate the vector with values clamped in given range o
 ### .v_scale( vector )
 Scales the caller by a vector argument, elementwise. That is to say:
 
-	v(0,1,2).v_scale(2,3,4)			// returns v(0,3,8)
+	v( 0,1,2 ).v_scale( 2,3,4 )		// returns v(0,3,8)
 
 ### .lerp( t, vector )
 Linearly interpolates the caller towards another vector.
 
-	point_A.lerp(t, point_B)
+	point_A.lerp( t, point_B )
 
 	// when t == 0	  point_A stays the same
 	//	t == 0.5  point_A slides halfway to point_B
@@ -182,7 +182,8 @@ Linearly interpolates the caller towards another vector.
 ### .slerp( t, vector )
 .slerp(). **S**pherical **L**inear int**ERP**olation. Slerp. I swear I'm not making this up. https://en.wikipedia.org/wiki/Slerp
 
-	point_A.slerp( point_B )
+	point_A.slerp( t, point_B )
+
 	// similar to linear interpolation, but instead of a straight line, point_A is rotated about the origin.
 	// when point_A and point_B are different magnitudes, the resulting vector's magnitude is linearly interpolated
 
