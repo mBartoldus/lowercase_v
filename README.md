@@ -1,6 +1,6 @@
 # lowercase_v
 
-I started this library while messing around in webGL. I was typing vectors every day, so I wanted a class that was:
+I started this library while messing around in webGL. I was typing vectors all day, so I wanted a class that was:
 
 * chainable
 * webGL-compliant
