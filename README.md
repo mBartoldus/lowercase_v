@@ -43,13 +43,13 @@ Let's say you wanted a 3-dimensional vector with elements [1,2,3]. Valid ways of
 
 This leaves one Potential ambiguity to consider:
 
-	v( 100 )   // returns a 100-dimensional vector
-	v([100]) // returns a 1-dimensional vector with the value 100.
+	v( 100 )	// returns a 100-dimensional vector
+	v([100])	// returns a 1-dimensional vector with the value 100.
 
 ## m(...)
 m() also extends Float32Array. Pass it a single number and it will give you the relevant n-by-n zero matrix.
 
-	m( 3 )	// returns a blank 3x3 matrix
+	m( 3 )		// returns a blank 3x3 matrix
 	
 For an m-by-n matrix, pass two numbers.
 The first will determine the number of rows ( the codomain ), and the second will determine the number of columns ( the domain ).
