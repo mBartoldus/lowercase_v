@@ -339,7 +339,7 @@ class Matrix extends Float32Array {
         this[indices[1] * this.codomain + indices[1]] = value
         return this
     }
-    from_quaternion() {
+    from_quaternion(quaternion) {
         let q = _interpret_v(4, ...arguments).normalize()
         let columns = []
         for (let i = 0; i < 3; i++) {
@@ -368,8 +368,8 @@ class Matrix extends Float32Array {
 }
 
 function m() { return new Matrix(...arguments) }
-m.identity = function (d = 3) {
-    let matrix = new Matrix(d)
+m.identity = function (n = 3) {
+    let matrix = new Matrix(n)
     for (let i = 0; i < d; i++) { matrix[i * d + i] = 1 }
     return matrix
 }
