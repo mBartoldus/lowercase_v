@@ -150,7 +150,7 @@ Checks the distance between two vectors and returns true if they're within a giv
 ### .swizzle( indices )
 Swizzling allows you to create a new vector from the values of another. .swizzle() accepts a vector of indices, and returns a new vector with the values taken from those indices.
 
-	v(1,2,3).swizzle(0,0,0) // returns v(1,1,1)
+	v(1,2,3).swizzle(0,0,0,1,2) // returns v(1,1,1,2,3)
 
 You can also call this method as .swz()
 
