@@ -248,9 +248,9 @@ Returns the left-multiplication of this and another matrix.
 ### .look_at( viewer, center, up = [0, 0, 1] )
 This is for making cameras (projection matrices). This relies on the cross product and therefore only works in 3 dimensions. The matrix is constructed using three vectors:
 
-* viewer	the camera's position
-* center	the point being looked at
-* up		what the camera perceives as "up"
+* viewer: the camera's position
+* center: the point being looked at
+* up: what the camera perceives as "up"
 
 By default, the Z-direction is "up". But imagine you're in space, hopping from planet to planet. To keep the camera upright relative to whatever planet you're on, you could write something like this:
 
