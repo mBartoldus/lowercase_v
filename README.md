@@ -36,11 +36,13 @@ Let's say you wanted a 3-dimensional vector with elements [1,2,3].
 	v([1,2], 3)
 	v([1], 2, new Float32Array([3])) // these all return [1,2,3]
 
-This feature was inspired by GLSL, where parameter concatenation is useful in converting vec3 to vec4. You can use concatenation to make quaternions, append alpha values to RGB, extend stencil shadow volumes to "infinity", etc.
+> This feature was inspired by GLSL, wherein parameter concatenation is useful in converting vec3 to vec4.
+> You can use concatenation to make quaternions, append alpha values to RGB, extend stencil shadow volumes to "infinity", etc.
 
-> Potential ambiguity to consider:
-> * v(100) returns a 100-dimensional vector
-> * v([100]) returns a 1-dimensional vector with the value 100.
+This leaves one Potential ambiguity to consider:
+
+	v(100)   // returns a 100-dimensional vector
+	v([100]) // returns a 1-dimensional vector with the value 100.
 
 ## m(...)
 m() also extends Float32Array. Pass it a single number and it will give you the relevant n-by-n zero matrix.
@@ -53,10 +55,10 @@ These numbers will be stored in the resulting matrix's .domain and .codomain pro
 
 	m(2, 3) // returns a matrix with 2 rows and 3 columns
 
-The m() constructor can't initialize values like v(), as the matrix's domain and codomain need to be initialized first.
+The m() constructor can't initialize values, as the domain and codomain need to be initialized first.
 To populate the matrix, use the methods .assign(), .from_rows(), .from_columns(), .from_quaternion(), .look_at(), or .face_towards().
 
-The values are stored in column-major order, for compatibility with webgl and GLSL.
+> Matrix elements are stored in column-major order, for compatibility with webgl and GLSL.
 
 ## In-Place Methods
 By default, in most of the methods in this library, the object will modify itself, and return "this". That fact is important to remember, as it can cause some confusion:
@@ -67,7 +69,7 @@ In the above example, point_A has modified itself, and worse yet - A_to_B is the
 
 	let A_to_B = v(point_A).to(point_B)
 
-That way, you only allocate new memory when you explicitly need it, and you can do so with brevity.
+That way, new memory is only allocated when explicitly needed, and one can do so with brevity.
 
 ## Reading and Writing
 The Vec and Matrix classes included in this library share the following methods for interacting with flat arrays:
@@ -258,7 +260,7 @@ By default, the Z-direction is "up". But imagine you're in space, hopping from p
 	let current_up = v(camera_position).sub( center_of_gravity ).slerp( 0.9, prior_up )
 	let camera_matrix = m(3).look_at( camera_position, point_of_focus, current_up )
 
-> current_up is slerped to prior_up to provide smooth camera transitions
+> current_up is slerped to prior_up to provide smooth camera transitions. prior_up can be derived from the camera's rotation matrix as left by the prior animation frame.
 
 ### .face_towards( viewer, center, up = [0, 0, 1] )
 Similar to .look_at(), but for things that aren't cameras.
@@ -274,4 +276,4 @@ Returns an nxn identity matrix. This function is called from the m object itself
 
 ## Credits
 As mentioned before, [gl-matrix](https://github.com/toji/gl-matrix) was the inspiration for much of this.
-Also, credits to William Rowan Hamilton for his exploration of quaternions, and numbers in general.
+Also, big thanks to William Rowan Hamilton for his exploration of quaternions, and numbers in general.
