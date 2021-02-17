@@ -5,7 +5,7 @@ I started this library while messing around in webGL. I was typing vectors all d
 
 * chainable
 * webGL-compliant
-* friendly towards large flat arrays
+* friendly towards large flat arrays and other datatypes/libraries
 * full of intuitive default parameters
 * easy to read
 * easy to type
