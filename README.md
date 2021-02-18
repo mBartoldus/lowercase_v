@@ -303,6 +303,8 @@ Vectors and matrices returned from .get() would be initialized with references t
 
 	Velocity.get( entity_id ).bounce( normal ).write()		// Flat_v syntax
 
+.transpose() will be added to the m() class shortly.
+
 ## Credits
 As mentioned before, [gl-matrix](https://github.com/toji/gl-matrix) was the inspiration for much of this.
 Also, big thanks to William Rowan Hamilton for his exploration of quaternions, and numbers in general.
