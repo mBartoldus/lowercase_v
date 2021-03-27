@@ -207,7 +207,7 @@ For calculating specular reflections. This one's more useful on the GPU end... I
 ### .bounce( normal, point_on_plane )
 Bounces the vector off a surface normal. Useful for changing velocity vectors during collision handling.
 
-### .transform( matrix )
+### .transform_by( matrix )
 Transforms the vector by a given matrix.
 
 ### v Methods
