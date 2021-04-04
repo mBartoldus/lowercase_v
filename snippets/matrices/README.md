@@ -43,22 +43,3 @@ Returns the left-multiplication of this and another matrix.
 
 ### Static Methods
 m.identity(n) returns an nxn identity matrix.
-
-## Future plans
-
-The next version may include flat array classes.
-
-	Flat_s( n_scalars )			// new Float32Array( n_scalars )
-	Flat_v( n_vectors, dimension )		// new Float32Array( n_vectors * dimension )
-	Flat_m( n_matrices, dimensions )	// new Float32Array( n_matrices * dimensions[0] * dimensions[1] )
-
-Each of these classes will come with .get( index ) and .set( index, value ) methods.
-Vectors and matrices returned from .get() would be initialized with references to the parent array for ease of writing
-
-	let Velocity = Flat_v( n_entities, 3 )
-
-	v(3).read( Velocity, entity_id ).bounce( normal ).write()	// present syntax
-
-	Velocity.get( entity_id ).bounce( normal ).write()		// Flat_v syntax
-
-.transpose() will be added to the m() class shortly.
