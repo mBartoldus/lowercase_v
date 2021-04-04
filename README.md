@@ -12,7 +12,7 @@ I started this library while messing around in webGL. I was typing vectors all d
 
 If that sounds relevant to your interests, read on.
 
-## Table of Contents		// rewrite this
+## Table of Contents
 0. Intro
 1. The v() constructor
 2. The m() constructor
