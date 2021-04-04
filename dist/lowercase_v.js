@@ -4,6 +4,8 @@
 
 /*----------------------------------------------------------------------*/
 
+// PRIVATE FUNCTIONS
+
 function _copy_at_index(output, input, index = 0) {
     let offset = output.length * index
     for (let i = 0; i < output.length; i++) output[i] = input[offset + i] || 0
@@ -43,7 +45,7 @@ function _interpret_m(interpreter, ...args) {
         } = interpreter
         let index = args[1] ?? interpreter.index
         let matrix = m(codomain, domain)
-        return _copy_at_index(matrix, input, index)
+        return _copy_at_index(matrix, args[0], index)
     }
 }
 function _interpret_p(expected_domain, ...input) {
@@ -58,7 +60,7 @@ function _interpret_p(expected_domain, ...input) {
     }
 }
 
-/*----------------------------------------------------------------------*/
+// CLASS METHODS
 
 const _reading_and_writing = {
     index: undefined,
@@ -89,7 +91,119 @@ const _reading_and_writing = {
     },
 }
 
-/*----------------------------------------------------------------------*/
+const _v3 = {
+    cross(...vector) {
+        let vec = _interpret_v(this, ...vector)
+        let c = v.cross(this, vec)
+        return _copy_at_index(this, c, 0)
+    },
+    rotate(rotation, ...axis) {
+        if (typeof rotation === "number") {
+            let matrix = m(3).from_axis(rotation, ...axis)
+            return this.transform_by(matrix)
+        } else {
+            let q = rotation
+            let xyz = v(3).copy(q)
+            let w = q[3]
+            let q_scalar = this.dot(xyz) * 2
+            let v_scalar = w * w - xyz.dot(xyz)
+            let cross = v(xyz).cross(this).scale(2 * w)
+            for (let i = 0; i < 3; i++) {
+                this[i] = xyz[i] * q_scalar + this[i] * v_scalar + cross[i]
+            }
+            return this
+        }
+    }
+}
+
+const _m3 = {
+    from_quaternion(...quaternion) {
+        let q = _interpret_v(v(4), ...quaternion)
+        let mag = q.magnitude()
+        let columns = []
+        for (let i = 0; i < 3; i++) {
+            let j = (i + 1) % 3
+            let k = (i + 2) % 3
+            let c = columns[i] = v(3)
+            c[i] = 1 - 2 * (q[j] * q[j] + q[k] * q[k])
+            c[j] = 2 * (q[i] * q[j] - q[k] * q[3])
+            c[k] = 2 * (q[i] * q[k] + q[j] * q[3])
+            c.scale(mag)
+        }
+        return this.from_columns(...columns)
+    },
+    from_q() { return this.from_quaternion(...arguments) },
+
+    from_axis(rotation, ...axis) {
+        axis = _interpret_v(this, ...axis)
+        let radians = rotation * Math.PI
+        let w = Math.cos(radians)
+        let mag = Math.sin(radians)
+        return this.from_quaternion(v(axis).normalize(mag), w)
+    },
+
+    look_at(viewer, center, up = [0, 0, 1]) {
+        let z = v(viewer).to(center).normalize()
+        let x = v.cross(z, up).normalize()
+        let y = v.cross(x, z)
+        return this.from_rows(x, y, z)
+    },
+
+    face_towards(viewer, center, up = [0, 0, 1]) {
+        let y = v(viewer).sub(center).normalize()
+        let x = v.cross(y, up).normalize()
+        let z = v.cross(x, y)
+        return this.from_columns(x, y, z)
+    }
+}
+
+const _quaternion = {
+
+    from_axis(rotation, ...axis) {
+        axis = _interpret_v(this, ...axis)
+        let radians = rotation * Math.PI
+        let w = Math.cos(radians)
+        let mag = Math.sin(radians)
+        this.copy(v(axis).normalize(mag), w)
+        return this
+    },
+
+    from_matrix(...matrix) {
+        matrix = _interpret_m(v(3), ...matrix)
+        let theta = Math.acos((matrix.trace() - 1) / 2) / 2
+        let w = Math.cos(theta)
+        let mag = Math.sin(theta)
+        let mat = _interpret_m(3, matrix)
+        let xyz = v(
+            mat[7] - mat[5],
+            mat[2] - mat[6],
+            mat[3] - mat[1]
+        ).normalize(mag)
+        return this.copy([...xyz, w])
+    },
+
+    quaternion(rotation, ...axis) {
+        return typeof rotation === "number" ?
+            this.from_axis(rotation, ...axis) :
+            this.from_matrix(...arguments)
+    },
+
+    compose(...quaternion) {
+        let vec = _interpret_v(this, ...quaternion)
+        let comp = v(4)
+        comp[3] = this[3] * vec[3]
+        for (let i = 0; i < 3; i++) {
+            let j = (i + 1) % 3
+            let k = (i + 2) % 3
+            comp[i] = this[i] * vec[3]
+                + this[3] * vec[i]
+                + this[k] * vec[j]
+                - this[j] * vec[k]
+            comp[3] -= this[i] * vec[i]
+        }
+        return this.copy(comp)
+    }
+}
 
 class Vec extends Float32Array {
     constructor() {
@@ -99,6 +213,8 @@ class Vec extends Float32Array {
             super(values)
         } else { super(arguments[0]) }
         Object.assign(this, _reading_and_writing)
+        this.length === 3 && Object.assign(this, _v3)
+        this.length === 4 && Object.assign(this, _quaternion)
     }
 
     swizzle(xyz) {
@@ -116,12 +232,6 @@ class Vec extends Float32Array {
         let product = 0
         for (let i = 0; i < length; i++) { product += this[i] * vec[i] }
         return product
-    }
-
-    cross(...vector) {
-        let vec = _interpret_v(this, ...vector)
-        let c = v.cross(this, vec)
-        return _copy_at_index(this, c, 0)
     }
 
     equals(vector, threshold = 0.0001) { return v.distance(this, vector) < threshold }
@@ -251,66 +361,11 @@ class Vec extends Float32Array {
             for (let i = 0; i < rows; i++) {
                 this[i] = 0
                 for (let j = 0; j < columns; j++) {
-                    this[i] += old[j] * matrix[j * rows + i]
+                    this[i] += old[j] * matrix[i * rows + j]
                 }
             }
         }
         return this
-    }
-    rotate(rotation, ...axis) {
-        if (typeof rotation === "number") {
-            let matrix = m(3).from_axis(rotation, ...axis)
-            return this.transform_by(matrix)
-        } else {
-            let q = rotation
-            let xyz = v(3).copy(q)
-            let w = q[3]
-            let q_scalar = this.dot(xyz) * 2
-            let v_scalar = w * w - xyz.dot(xyz)
-            let cross = v(xyz).cross(this).scale(2 * w)
-            for (let i = 0; i < 3; i++) {
-                this[i] = xyz[i] * q_scalar + this[i] * v_scalar + cross[i]
-            }
-            return this
-        }
-    }
-
-    quaternion(rotation, ...axis) {
-        if (typeof rotation === "number") {
-            axis = _interpret_v(this, ...axis)
-            let radians = rotation * Math.PI
-            let w = Math.cos(radians)
-            let mag = Math.sin(radians)
-            this.copy(v(axis).normalize(mag), w)
-            return this
-        } else if (rotation instanceof Matrix) {
-            let theta = Math.acos((rotation.trace() - 1) / 2) / 2
-            let w = Math.cos(theta)
-            let mag = Math.sin(theta)
-            let mat = rotation
-            let xyz = v(
-                mat[7] - mat[5],
-                mat[2] - mat[6],
-                mat[3] - mat[1]
-            ).normalize(mag)
-            return this.copy([...xyz, w])
-        }
-    }
-
-    compose(...vector) {
-        let vec = _interpret_v(this, ...vector)
-        let comp = v(4)
-        comp[3] = this[3] * vec[3]
-        for (let i = 0; i < 3; i++) {
-            let j = (i + 1) % 3
-            let k = (i + 2) % 3
-            comp[i] = this[i] * vec[3]
-                + this[3] * vec[i]
-                + this[j] * vec[k]
-                - this[k] * vec[j]
-            comp[3] -= this[i] * vec[i]
-        }
-        return this.copy(comp)
     }
 }
 
@@ -345,8 +400,6 @@ v.q = function () {
     return v(4).quaternion(...arguments)
 }
 
-/*----------------------------------------------------------------------*/
-
 class Matrix extends Float32Array {
     constructor(n_rows, n_columns = n_rows) {
         // m( x, y ) == m([x, y])
@@ -357,6 +410,7 @@ class Matrix extends Float32Array {
         this.codomain = n_rows
         this.domain = n_columns
         Object.assign(this, _reading_and_writing)
+        if(this.domain === 3 && this.codomain === 3) Object.assign(this, _m3)
     }
     *[Symbol.iterator]() {
         yield* this.rows()
@@ -453,53 +507,12 @@ class Matrix extends Float32Array {
         this[indices[1] * this.codomain + indices[1]] = value
         return this
     }
-    from_quaternion(...quaternion) {
-        let q = _interpret_v(v(4), ...quaternion)
-        let mag = q.magnitude()
-        let columns = []
-        for (let i = 0; i < 3; i++) {
-            let j = (i + 1) % 3
-            let k = (i + 2) % 3
-            let c = columns[i] = v(3)
-            c[i] = 1 - 2 * (q[j] * q[j] + q[k] * q[k])
-            c[j] = 2 * (q[i] * q[j] - q[k] * q[3])
-            c[k] = 2 * (q[i] * q[k] + q[j] * q[3])
-            c.scale(mag)
-        }
-        return this.from_columns(...columns)
-    }
-    from_q() { return this.from_quaternion(...arguments) }
-
-    from_axis(rotation, ...axis) {
-        axis = _interpret_v(this, ...axis)
-        let radians = rotation * Math.PI
-        let w = Math.cos(radians)
-        let mag = Math.sin(radians)
-        return this.from_quaternion(v(axis).normalize(mag), w)
-    }
-
     trace() {
         let n = this.domain === this.codomain ? this.domain : console.error("trace undefined for non-square matrix")
         let trace = 0
         for (let i = 0; i < n; i++) trace += this[i * n + i]
         return trace
     }
-
-
-    look_at(viewer, center, up = [0, 0, 1]) {
-        let z = v(viewer).to(center).normalize()
-        let x = v.cross(z, up).normalize()
-        let y = v.cross(x, z)
-        return this.from_rows(x, y, z)
-    }
-
-    face_towards(viewer, center, up = [0, 0, 1]) {
-        let y = v(viewer).sub(center).normalize()
-        let x = v.cross(y, up).normalize()
-        let z = v.cross(x, y)
-        return this.from_columns(x, y, z)
-    }
-
     transpose() {
         if (this.domain == this.codomain) {
             let dim = this.dimension
@@ -533,106 +546,3 @@ m.identity = function (n = 3) {
     for (let i = 0; i < n; i++) { matrix[i * n + i] = 1 }
     return matrix
 }
-
-/*----------------------------------------------------------------------*/
-
-class FlatArray extends Float32Array {
-    constructor(n, dimensions) {
-        let class_constructor
-        let stride
-        switch (typeof dimensions) {
-            case "number":
-                class_constructor = Vec
-                stride = dimensions
-                break
-            case "object":
-                class_constructor = Matrix
-                stride = dimensions[0] * (dimensions[1] ?? dimensions[0])
-                break
-            default: break
-        }
-        super(n * stride)
-        Object.assign(this, {
-            stride,
-            class: class_constructor,
-            dimensions
-        })
-    }
-    get(index) {
-        return this.class ?
-            (new this.class(this.dimensions)).read(this, index) :
-            this[index]
-    }
-    set(index, data) {
-        if (data instanceof this.class) data.write(this, index)
-        else {
-            for (let i = 0; i < data.length; i++) {
-                this[i] = data[i]
-            }
-        }
-        return this
-    }
-}
-
-export function Flat_Array(n_vectors, dimension) {
-    return new FlatArray(n_vectors, dimension)
-}
-
-/*----------------------------------------------------------------------*/
-
-class WovenArray extends Float32Array {
-    constructor(n_instances, format) {
-        let stride = 0
-        let offset = 0
-
-        let dimensions = {}
-        let offsets = {}
-
-        for (let prop in format) {
-            let dim = format[prop]
-            let length = typeof dim == "number" ? dim : dim[0] * (dim[1] ?? dim[0])
-
-            dimensions[prop] = dim
-            offsets[prop] = offset
-
-            stride += length
-            offset += length
-        }
-        super(stride * n_instances)
-        Object.assign(this, {
-            stride,
-            format,
-            dimensions,
-            offsets
-        }, _reading_and_writing)
-    }
-
-    get(id, tag) {
-        if (!tag) {
-            return Woven_Array(1, this.format).copy(this, id)
-        } else {
-            let dim = this.dimensions[tag]
-            let value
-            if (typeof dim === "number") value = v(dim)
-            else value = m(...dim)
-            let offset = this.offsets[tag]
-            for (let i = 0; i < value.length; i++) {
-                value[i] = this[id * this.stride + offset + i]
-            }
-            value.parent = this
-            value.index = (id * this.stride + offset) / value.length
-
-            return value
-        }
-    }
-
-    set(id, value, tag) {
-        let offset = this.offsets[tag] ?? 0
-        for (let i = 0; i < value.length; i++) {
-            this[id * this.stride + offset + i] = value[i]
-        }
-        return this
-    }
-}
-
-export function Woven_Array(n_instances, format) { return new WovenArray(n_instances, format) }
