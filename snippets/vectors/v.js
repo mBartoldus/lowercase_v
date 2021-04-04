@@ -6,6 +6,8 @@ class Vec extends Float32Array {
             super(values)
         } else { super(arguments[0]) }
         Object.assign(this, _reading_and_writing)
+        this.length === 3 && Object.assign(this, _v3)
+        this.length === 4 && Object.assign(this, _quaternion)
     }
 
     swizzle(xyz) {

@@ -8,6 +8,7 @@ class Matrix extends Float32Array {
         this.codomain = n_rows
         this.domain = n_columns
         Object.assign(this, _reading_and_writing)
+        if(this.domain === 3 && this.codomain === 3) Object.assign(this, _m3)
     }
     *[Symbol.iterator]() {
         yield* this.rows()

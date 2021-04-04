@@ -10,7 +10,8 @@ const _quaternion = {
     },
 
     from_matrix(...matrix) {
-        let theta = Math.acos((rotation.trace() - 1) / 2) / 2
+        matrix = _interpret_m(v(3), ...matrix)
+        let theta = Math.acos((matrix.trace() - 1) / 2) / 2
         let w = Math.cos(theta)
         let mag = Math.sin(theta)
         let mat = _interpret_m(3, matrix)

@@ -39,7 +39,7 @@ function _interpret_m(interpreter, ...args) {
         } = interpreter
         let index = args[1] ?? interpreter.index
         let matrix = m(codomain, domain)
-        return _copy_at_index(matrix, input, index)
+        return _copy_at_index(matrix, args[0], index)
     }
 }
 function _interpret_p(expected_domain, ...input) {
