@@ -1,5 +1,5 @@
 # lowercase_v
-> presently available as an ES6 module
+> Now available as a UMD (ES5) module, in addition to an ES6 module!
 
 I started this library while messing around in webGL. I was typing vectors all day, so I wanted a class that was:
 
